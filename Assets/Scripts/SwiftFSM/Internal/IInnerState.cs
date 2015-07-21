@@ -11,6 +11,8 @@ internal interface IInnerState <TState, TEvent>
 	TransitionResult<TState, TEvent> Fire(TEvent eventId, Hashtable parameters);
 	void AddTransition(ITransition<TState, TEvent> tr);
 
+	void AttachStateObject(IState state);
+
 	Action ExecuteOnEnterAction {set;}
 	Action ExecuteOnExitAction {set;}
 	Action ExecuteAction {set;}

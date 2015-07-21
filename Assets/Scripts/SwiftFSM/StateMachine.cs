@@ -50,7 +50,6 @@ public class StateMachine<TState, TEvent>
 	public void Start()
 	{
 		isRuning = true;
-		Execute();
 	}
 
 	public virtual void Execute()

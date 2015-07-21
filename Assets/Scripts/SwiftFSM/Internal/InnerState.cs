@@ -14,8 +14,6 @@ internal class InnerState<TState, TEvent> : IInnerState<TState, TEvent>
 		private set;
 	}
 
-	public IState AttachedState {get;set;}
-
 	internal InnerState (TState stateId, IState attachedStateEntity)
 	{
 		StateId = stateId;
@@ -74,6 +72,13 @@ internal class InnerState<TState, TEvent> : IInnerState<TState, TEvent>
 			transitions = new List<ITransition<TState, TEvent>>();
 
 		transitions.Add(tr);
+	}
+
+
+	public IState AttachedState {get; private set;}
+	public void AttachStateObject(IState state)
+	{
+		AttachedState = state;
 	}
 
 	public Action ExecuteOnEnterAction {set; private get;}

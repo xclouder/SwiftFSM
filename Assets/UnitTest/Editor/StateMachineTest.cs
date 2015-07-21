@@ -5,6 +5,25 @@ using NUnit.Framework;
 
 public class StateMachineTest {
 
+	class CustomState : IState
+	{
+		public virtual void Enter()
+		{
+			UnityEngine.Debug.Log("CustomState Enter");
+		}
+		
+		public virtual void Execute()
+		{
+			UnityEngine.Debug.Log("CustomState Execute");
+		}
+		
+		public virtual void Exit()
+		{
+			UnityEngine.Debug.Log("CustomState Exit");
+		}
+
+	}
+
 	enum MyState
 	{
 		StateA,
@@ -29,7 +48,7 @@ public class StateMachineTest {
 		ex = Assert.Throws<InvalidOperationException>(() => machine.Execute());
 		Assert.That(ex.Message, Is.EqualTo("Cannot execute before state machine is running"));
 
-		machine	.In(MyState.StateA)
+		machine	.In(MyState.StateA).Attach(new CustomState())
 					.ExecuteOnEnter(()=>{UnityEngine.Debug.Log("Enter State A");})
 					.ExecuteOnExit(()=>{UnityEngine.Debug.Log("Exit State A");})
 				.On(MyEvent.EventA)

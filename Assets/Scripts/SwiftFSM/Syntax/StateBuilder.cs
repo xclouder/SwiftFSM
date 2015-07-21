@@ -54,4 +54,11 @@ internal class StateBuilder<TState, TEvent> : IInSyntax<TState, TEvent>, IOnSynt
 
 		return this;
 	}
+
+	IInSyntax<TState, TEvent> IInSyntax<TState, TEvent>.Attach(IState attachedState)
+	{
+		CurrentState.AttachStateObject(attachedState);
+
+		return this;
+	}
 }

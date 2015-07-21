@@ -9,4 +9,5 @@ public interface IInSyntax<TState, TEvent>
 	IInSyntax<TState, TEvent> Execute(Action executeAction);
 	IInSyntax<TState, TEvent> ExecuteOnExit(Action enterAction);
 	IOnSyntax<TState, TEvent> On(TEvent evt);
+	IInSyntax<TState, TEvent> Attach(IState attachedState);
 }
