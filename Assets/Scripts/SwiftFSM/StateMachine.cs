@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 
 public class StateMachine<TState, TEvent, TContext> 
 	where TState : IComparable 
@@ -46,10 +45,12 @@ public class StateMachine<TState, TEvent, TContext>
 
 	private bool isRuning = false;
 	private bool isInitialized = false;
-	public void Initialize(TState stateId)
+	private TContext context;
+	public void Initialize(TState stateId, TContext ctx)
 	{
 		isInitialized = true;
 		InitialState = stateDict[stateId];
+		context = ctx;
 	}
 
 	public void Start()
@@ -91,11 +92,11 @@ public class StateMachine<TState, TEvent, TContext>
 		CurrentState.Execute();
 	}
 
-	public void Fire(TEvent evtId, Hashtable paramters = null)
+	public void Fire(TEvent evtId, params object[] parameters)
 	{
 		Check_StateMachineHasInitializedAndIsRunning();
 		
-		var result = CurrentState.Fire(evtId, paramters);
+		var result = CurrentState.Fire(evtId, parameters);
 
 		if (result.IsFired)
 		{

@@ -75,7 +75,7 @@ internal class InnerState<TState, TEvent, TContext> : IInnerState<TState, TEvent
 	}
 
 
-	public IState AttachedState {get; private set;}
+	private IState AttachedState {get; set;}
 	public void AttachStateObject(IState state)
 	{
 		AttachedState = state;
@@ -84,5 +84,5 @@ internal class InnerState<TState, TEvent, TContext> : IInnerState<TState, TEvent
 	public Action ExecuteOnEnterAction {set; private get;}
 	public Action ExecuteOnExitAction {set; private get;}
 	public Action ExecuteAction {set; private get;}
-
+	
 }
