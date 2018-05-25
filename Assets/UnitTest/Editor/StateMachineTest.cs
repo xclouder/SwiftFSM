@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+
 using NUnit.Framework;
 
 public class StateMachineTest {
@@ -39,7 +38,7 @@ public class StateMachineTest {
 	[Test]
 	public void TestBasicMachineBehaviour()
 	{
-		var machine = new StateMachine<MyState, MyEvent>();
+		var machine = new StateMachine<MyState, MyEvent, System.Object>();
 
 		var ex = Assert.Throws<InvalidOperationException>(() => machine.Execute());
 		Assert.That(ex.Message, Is.EqualTo("Cannot execute before state machine is initialized"));

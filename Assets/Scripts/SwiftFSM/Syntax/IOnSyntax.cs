@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections;
 
-public interface IOnSyntax <TState, TEvent>
+public interface IOnSyntax <TState, TEvent, TContext>
 	where TState : IComparable
 	where TEvent : IComparable
 {
-	IInSyntax<TState, TEvent> GoTo(TState state);
+	IInSyntax<TState, TEvent, TContext> GoTo(TState state);
 }

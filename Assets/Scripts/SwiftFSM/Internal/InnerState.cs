@@ -2,12 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 
-internal class InnerState<TState, TEvent> : IInnerState<TState, TEvent> 
+internal class InnerState<TState, TEvent, TContext> : IInnerState<TState, TEvent, TContext> 
 	where TState : IComparable
 	where TEvent : IComparable 
 {
 
-    private IList<ITransition<TState, TEvent>> transitions;
+    private IList<ITransition<TState, TEvent, TContext>> transitions;
 
 	public TState StateId {
 		get;
@@ -47,10 +47,10 @@ internal class InnerState<TState, TEvent> : IInnerState<TState, TEvent>
 			AttachedState.Exit();
 	}
 	
-	public TransitionResult<TState, TEvent> Fire(TEvent eventId, Hashtable parameters = null)
+	public TransitionResult<TState, TEvent, TContext> Fire(TEvent eventId, params object[] paramters)
 	{
         bool fired = false;
-		IInnerState<TState, TEvent> toState = null;
+		IInnerState<TState, TEvent, TContext> toState = null;
 		if (transitions != null)
 		{
 			foreach (var t in transitions)
@@ -63,13 +63,13 @@ internal class InnerState<TState, TEvent> : IInnerState<TState, TEvent>
 			}
 		}
 
-		return new TransitionResult<TState, TEvent>(fired, toState);
+		return new TransitionResult<TState, TEvent, TContext>(fired, toState);
 	}
 
-	public void AddTransition(ITransition<TState, TEvent> tr)
+	public void AddTransition(ITransition<TState, TEvent, TContext> tr)
 	{
 		if (transitions == null)
-			transitions = new List<ITransition<TState, TEvent>>();
+			transitions = new List<ITransition<TState, TEvent, TContext>>();
 
 		transitions.Add(tr);
 	}

@@ -2,20 +2,20 @@
 using System.Collections;
 using System.Collections.Generic;
 
-internal class StateDictionary<TState, TEvent> 
+internal class StateDictionary<TState, TEvent, TContext> 
 	where TState : IComparable
 	where TEvent : IComparable
 {
-	private IDictionary<TState, IInnerState<TState, TEvent>> dict;
-	private IFactory<TState, TEvent> factory;
+	private IDictionary<TState, IInnerState<TState, TEvent, TContext>> dict;
+	private IFactory<TState, TEvent, TContext> factory;
 
-	public StateDictionary(IFactory<TState, TEvent> fac)
+	public StateDictionary(IFactory<TState, TEvent, TContext> fac)
 	{
-		dict = new Dictionary<TState, IInnerState<TState, TEvent>>();
+		dict = new Dictionary<TState, IInnerState<TState, TEvent, TContext>>();
 		factory = fac;
 	}
 
-	public IInnerState<TState, TEvent> this[TState stateId]
+	public IInnerState<TState, TEvent, TContext> this[TState stateId]
 	{
 		get {
 

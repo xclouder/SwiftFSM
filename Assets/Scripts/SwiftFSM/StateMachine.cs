@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 
-public class StateMachine<TState, TEvent> 
+public class StateMachine<TState, TEvent, TContext> 
 	where TState : IComparable 
 	where TEvent : IComparable
 {
@@ -11,8 +11,8 @@ public class StateMachine<TState, TEvent>
 		}
 	}
 
-	private IInnerState<TState, TEvent> _currentState;
-	private IInnerState<TState, TEvent> CurrentState { 
+	private IInnerState<TState, TEvent, TContext> _currentState;
+	private IInnerState<TState, TEvent, TContext> CurrentState { 
 		get {
 			return _currentState;
 		}
@@ -28,15 +28,15 @@ public class StateMachine<TState, TEvent>
 			value.Enter();
 		}
 	}
-	private IInnerState<TState, TEvent> InitialState { get;set; }
+	private IInnerState<TState, TEvent, TContext> InitialState { get;set; }
 
-	private StateDictionary<TState, TEvent> stateDict;
-	private IFactory<TState, TEvent> factory;
+	private StateDictionary<TState, TEvent, TContext> stateDict;
+	private IFactory<TState, TEvent, TContext> factory;
 
 	public StateMachine()
 	{
-		factory = new Factory<TState, TEvent>();
-		stateDict = new StateDictionary<TState, TEvent>(factory);
+		factory = new Factory<TState, TEvent, TContext>();
+		stateDict = new StateDictionary<TState, TEvent, TContext>(factory);
 	}
 
 	private bool isRuning = false;
@@ -89,10 +89,10 @@ public class StateMachine<TState, TEvent>
 	}
 
 
-	public IInSyntax<TState, TEvent> In(TState state)
+	public IInSyntax<TState, TEvent, TContext> In(TState state)
 	{
 		var s = stateDict[state];
-		var builder = new StateBuilder<TState, TEvent>(s, stateDict, factory);
+		var builder = new StateBuilder<TState, TEvent, TContext>(s, stateDict, factory);
 
 		return builder;
 	}

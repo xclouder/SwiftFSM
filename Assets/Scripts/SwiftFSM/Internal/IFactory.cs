@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections;
 
-internal interface IFactory<TState, TEvent>
+internal interface IFactory<TState, TEvent, TContext>
 	where TState : IComparable
 	where TEvent : IComparable
 {
-	IInnerState<TState, TEvent> Create(TState stateId);
-	ITransition<TState, TEvent> CreateTransition(TEvent evtId, IInnerState<TState, TEvent> target);
+	IInnerState<TState, TEvent, TContext> Create(TState stateId);
+	ITransition<TState, TEvent, TContext> CreateTransition(TEvent evtId, IInnerState<TState, TEvent, TContext> target);
 }

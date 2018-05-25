@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections;
 
-public interface IInSyntax<TState, TEvent>
+public interface IInSyntax<TState, TEvent, TContext>
 	where TState : IComparable
 	where TEvent : IComparable
 {
-	IInSyntax<TState, TEvent> ExecuteOnEnter(Action enterAction);
-	IInSyntax<TState, TEvent> Execute(Action executeAction);
-	IInSyntax<TState, TEvent> ExecuteOnExit(Action enterAction);
-	IOnSyntax<TState, TEvent> On(TEvent evt);
-	IInSyntax<TState, TEvent> Attach(IState attachedState);
+	IInSyntax<TState, TEvent, TContext> ExecuteOnEnter(Action enterAction);
+	IInSyntax<TState, TEvent, TContext> Execute(Action executeAction);
+	IInSyntax<TState, TEvent, TContext> ExecuteOnExit(Action enterAction);
+	IOnSyntax<TState, TEvent, TContext> On(TEvent evt);
+	IInSyntax<TState, TEvent, TContext> Attach(IState attachedState);
 }

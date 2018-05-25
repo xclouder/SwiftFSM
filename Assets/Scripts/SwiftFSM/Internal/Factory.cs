@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections;
 
-internal class Factory<TState, TEvent> : IFactory<TState, TEvent> 
+internal class Factory<TState, TEvent, TContext> : IFactory<TState, TEvent, TContext> 
 	where TState : IComparable
 	where TEvent : IComparable
 {
 
-	public IInnerState<TState, TEvent> Create(TState stateId)
+	public IInnerState<TState, TEvent, TContext> Create(TState stateId)
 	{
-		return new InnerState<TState, TEvent>(stateId, null);
+		return new InnerState<TState, TEvent, TContext>(stateId, null);
 	}
 
-	public ITransition<TState, TEvent> CreateTransition(TEvent evtId, IInnerState<TState, TEvent> target)
+	public ITransition<TState, TEvent, TContext> CreateTransition(TEvent evtId, IInnerState<TState, TEvent, TContext> target)
 	{
-		var tr = new Transition<TState, TEvent>();
+		var tr = new Transition<TState, TEvent, TContext>();
 		tr.Target = target;
 		tr.EventToTrigger = evtId;
 
