@@ -25,7 +25,12 @@ public class StateMachine<TState, TEvent, TContext>
 			}
 
 			_currentState = value;
-			value.Enter();
+
+			if (value != null)
+			{
+				value.Enter();
+			}
+			
 		}
 	}
 	private IInnerState<TState, TEvent, TContext> InitialState { get;set; }
@@ -50,6 +55,30 @@ public class StateMachine<TState, TEvent, TContext>
 	public void Start()
 	{
 		isRuning = true;
+
+		if (CurrentState == null)
+		{
+			CurrentState = InitialState;
+		}
+		
+	}
+
+	public void Stop()
+	{
+		isRuning = false;
+
+		if (CurrentState != null)
+		{
+			CurrentState.Exit();
+		}
+	}
+
+	public bool IsStarted
+	{
+		get
+		{
+			return isRuning;
+		}
 	}
 
 	public virtual void Execute()
