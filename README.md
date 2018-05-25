@@ -4,45 +4,45 @@
 示例
 
 ```
-	enum MyState
-	{
-		StateA,
-		StateB
-	}
+enum MyState
+{
+	StateA,
+	StateB
+}
 
-	enum MyEvent
-	{
-		EventA,
-		EventB
-	}
+enum MyEvent
+{
+	EventA,
+	EventB
+}
 
-	public void TestBasicMachineBehaviour()
-	{
-		var machine = new StateMachine<MyState, MyEvent>();
+public void TestBasicMachineBehaviour()
+{
+	var machine = new StateMachine<MyState, MyEvent>();
 
-    //指定初始状态
-		machine.Initialize(MyState.StateA);
-		
-    //定义状态跳转
-		machine	.In(MyState.StateA)
-					.ExecuteOnEnter(()=>{UnityEngine.Debug.Log("Enter State A");})
-					.ExecuteOnExit(()=>{UnityEngine.Debug.Log("Exit State A");})
-				.On(MyEvent.EventA)
-				.GoTo(MyState.StateB);
+//指定初始状态
+	machine.Initialize(MyState.StateA);
 
-		machine.In(MyState.StateB).On(MyEvent.EventB).GoTo(MyState.StateA);
+//定义状态跳转
+	machine	.In(MyState.StateA)
+				.ExecuteOnEnter(()=>{UnityEngine.Debug.Log("Enter State A");})
+				.ExecuteOnExit(()=>{UnityEngine.Debug.Log("Exit State A");})
+			.On(MyEvent.EventA)
+			.GoTo(MyState.StateB);
 
-    //启动状态机
-		machine.Start();
-		machine.Execute();
+	machine.In(MyState.StateB).On(MyEvent.EventB).GoTo(MyState.StateA);
 
-    //触发事件，状态跳转
-		machine.Fire(MyEvent.EventA);
-		var stateId = machine.CurrentStateId;
-		Assert.AreEqual(MyState.StateB, stateId);
+//启动状态机
+	machine.Start();
+	machine.Execute();
 
-		machine.Fire(MyEvent.EventB);
-		stateId = machine.CurrentStateId;
-		Assert.AreEqual(MyState.StateA, stateId);
-	}
+//触发事件，状态跳转
+	machine.Fire(MyEvent.EventA);
+	var stateId = machine.CurrentStateId;
+	Assert.AreEqual(MyState.StateB, stateId);
+
+	machine.Fire(MyEvent.EventB);
+	stateId = machine.CurrentStateId;
+	Assert.AreEqual(MyState.StateA, stateId);
+}
 ```
