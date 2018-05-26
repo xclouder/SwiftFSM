@@ -3,6 +3,7 @@
 public class StateMachine<TState, TEvent, TContext> 
 	where TState : IComparable 
 	where TEvent : IComparable
+	where TContext : class
 {
 	public TState CurrentStateId {
 		get {
@@ -12,25 +13,7 @@ public class StateMachine<TState, TEvent, TContext>
 
 	private IInnerState<TState, TEvent, TContext> _currentState;
 	private IInnerState<TState, TEvent, TContext> CurrentState { 
-		get {
-			return _currentState;
-		}
-		set
-		{
-			var oldState = _currentState;
-			if (oldState != null)
-			{
-				oldState.Exit();
-			}
-
-			_currentState = value;
-
-			if (value != null)
-			{
-				value.Enter();
-			}
-			
-		}
+		get { return _currentState; }
 	}
 	private IInnerState<TState, TEvent, TContext> InitialState { get;set; }
 
@@ -46,7 +29,7 @@ public class StateMachine<TState, TEvent, TContext>
 	private bool isRuning = false;
 	private bool isInitialized = false;
 	private TContext context;
-	public void Initialize(TState stateId, TContext ctx)
+	public void Initialize(TState stateId, TContext ctx = null)
 	{
 		isInitialized = true;
 		InitialState = stateDict[stateId];
@@ -59,7 +42,7 @@ public class StateMachine<TState, TEvent, TContext>
 
 		if (CurrentState == null)
 		{
-			CurrentState = InitialState;
+			SetCurrentState(InitialState, null);
 		}
 		
 	}
@@ -70,7 +53,7 @@ public class StateMachine<TState, TEvent, TContext>
 
 		if (CurrentState != null)
 		{
-			CurrentState.Exit();
+			CurrentState.Exit(context, null);
 		}
 	}
 
@@ -87,9 +70,11 @@ public class StateMachine<TState, TEvent, TContext>
 		Check_StateMachineHasInitializedAndIsRunning();
 
 		if (CurrentState == null)
-			CurrentState = InitialState;
+		{
+			SetCurrentState(InitialState, null);
+		}
 
-		CurrentState.Execute();
+		CurrentState.Execute(context);
 	}
 
 	public void Fire(TEvent evtId, params object[] parameters)
@@ -100,7 +85,7 @@ public class StateMachine<TState, TEvent, TContext>
 
 		if (result.IsFired)
 		{
-			CurrentState = result.ToState;
+			SetCurrentState(result.ToState, parameters);
 		}
 
 	}
@@ -126,5 +111,22 @@ public class StateMachine<TState, TEvent, TContext>
 
 		return builder;
 	}
+
+	private void SetCurrentState(IInnerState<TState, TEvent, TContext> state, object[] parameters)
+	{
+		var oldState = _currentState;
+		if (oldState != null)
+		{
+			oldState.Exit(context, parameters);
+		}
+
+		_currentState = state;
+
+		if (state != null)
+		{
+			state.Enter(context, parameters);
+		}
+	}
+	
 
 }

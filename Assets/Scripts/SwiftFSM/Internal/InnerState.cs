@@ -5,6 +5,7 @@ using System.Collections.Generic;
 internal class InnerState<TState, TEvent, TContext> : IInnerState<TState, TEvent, TContext> 
 	where TState : IComparable
 	where TEvent : IComparable 
+	where TContext : class
 {
 
     private IList<ITransition<TState, TEvent, TContext>> transitions;
@@ -14,37 +15,37 @@ internal class InnerState<TState, TEvent, TContext> : IInnerState<TState, TEvent
 		private set;
 	}
 
-	internal InnerState (TState stateId, IState attachedStateEntity)
+	internal InnerState (TState stateId, IState<TContext> attachedStateEntity)
 	{
 		StateId = stateId;
 		AttachedState = attachedStateEntity;
 	}
 
-	public void Enter()
+	public void Enter(TContext ctx, params object[] parameters)
 	{
 		if (ExecuteOnEnterAction != null)
-			ExecuteOnEnterAction();
+			ExecuteOnEnterAction(ctx, parameters);
 
 		if (AttachedState != null)
-			AttachedState.Enter();
+			AttachedState.Enter(ctx, parameters);
 	}
 
-	public void Execute()
+	public void Execute(TContext ctx)
 	{
 		if (ExecuteAction != null)
-			ExecuteAction();
+			ExecuteAction(ctx);
 
 		if (AttachedState != null)
-			AttachedState.Execute();
+			AttachedState.Execute(ctx);
 	}
 
-	public void Exit()
+	public void Exit(TContext ctx, params object[] parameters)
 	{
 		if (ExecuteOnExitAction != null)
-			ExecuteOnExitAction();
+			ExecuteOnExitAction(ctx, parameters);
 
 		if (AttachedState != null)
-			AttachedState.Exit();
+			AttachedState.Exit(ctx, parameters);
 	}
 	
 	public TransitionResult<TState, TEvent, TContext> Fire(TEvent eventId, params object[] paramters)
@@ -63,7 +64,7 @@ internal class InnerState<TState, TEvent, TContext> : IInnerState<TState, TEvent
 			}
 		}
 
-		return new TransitionResult<TState, TEvent, TContext>(fired, toState);
+		return new TransitionResult<TState, TEvent, TContext>(fired, toState, paramters);
 	}
 
 	public void AddTransition(ITransition<TState, TEvent, TContext> tr)
@@ -75,14 +76,14 @@ internal class InnerState<TState, TEvent, TContext> : IInnerState<TState, TEvent
 	}
 
 
-	private IState AttachedState {get; set;}
-	public void AttachStateObject(IState state)
+	private IState<TContext> AttachedState {get; set;}
+	public void AttachStateObject(IState<TContext> state)
 	{
 		AttachedState = state;
 	}
 
-	public Action ExecuteOnEnterAction {set; private get;}
-	public Action ExecuteOnExitAction {set; private get;}
-	public Action ExecuteAction {set; private get;}
+	public Action<TContext, object[]> ExecuteOnEnterAction {set; private get;}
+	public Action<TContext, object[]> ExecuteOnExitAction {set; private get;}
+	public Action<TContext> ExecuteAction {set; private get;}
 	
 }

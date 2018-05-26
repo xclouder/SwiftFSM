@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public interface IState {
+public interface IState<in TContext> {
 
-	void Enter();
+	void Enter(TContext ctx, params object[] args);
 
-	void Execute();
+	void Execute(TContext ctx);
 
-	void Exit();
+	void Exit(TContext ctx, params object[] args);
 
 }

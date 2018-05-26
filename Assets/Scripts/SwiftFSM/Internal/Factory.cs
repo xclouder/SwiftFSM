@@ -4,6 +4,7 @@ using System.Collections;
 internal class Factory<TState, TEvent, TContext> : IFactory<TState, TEvent, TContext> 
 	where TState : IComparable
 	where TEvent : IComparable
+	where TContext : class
 {
 
 	public IInnerState<TState, TEvent, TContext> Create(TState stateId)

@@ -4,6 +4,7 @@ using System.Collections;
 internal interface ITransition <TState, TEvent, TContext>
 	where TState : IComparable
 	where TEvent : IComparable
+	where TContext : class
 {
 
 	IInnerState<TState, TEvent, TContext> Source {get;set;}

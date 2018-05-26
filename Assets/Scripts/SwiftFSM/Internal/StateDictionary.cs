@@ -5,6 +5,7 @@ using System.Collections.Generic;
 internal class StateDictionary<TState, TEvent, TContext> 
 	where TState : IComparable
 	where TEvent : IComparable
+	where TContext : class
 {
 	private IDictionary<TState, IInnerState<TState, TEvent, TContext>> dict;
 	private IFactory<TState, TEvent, TContext> factory;

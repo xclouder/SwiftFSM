@@ -1,22 +1,25 @@
 ﻿using System;
 
 using NUnit.Framework;
+using UnityEngine;
 
 public class StateMachineTest {
 
-	class CustomState : IState
+	class CustomState : IState<object>
 	{
-		public virtual void Enter()
+		public virtual void Enter(object ctx, params object[] args)
 		{
+			var g = ctx as GameObject;
+			Assert.AreEqual(g.name, "a");
 			UnityEngine.Debug.Log("CustomState Enter");
 		}
 		
-		public virtual void Execute()
+		public virtual void Execute(object ctx)
 		{
 			UnityEngine.Debug.Log("CustomState Execute");
 		}
 		
-		public virtual void Exit()
+		public virtual void Exit(object ctx, params object[] args)
 		{
 			UnityEngine.Debug.Log("CustomState Exit");
 		}
@@ -43,20 +46,19 @@ public class StateMachineTest {
 		var ex = Assert.Throws<InvalidOperationException>(() => machine.Execute());
 		Assert.That(ex.Message, Is.EqualTo("Cannot execute before state machine is initialized"));
 
-		machine.Initialize(MyState.StateA);
+		machine.Initialize(MyState.StateA, new GameObject("a"));
 		ex = Assert.Throws<InvalidOperationException>(() => machine.Execute());
 		Assert.That(ex.Message, Is.EqualTo("Cannot execute before state machine is running"));
 
 		machine	.In(MyState.StateA).Attach(new CustomState())
-					.ExecuteOnEnter(()=>{UnityEngine.Debug.Log("Enter State A");})
-					.ExecuteOnExit(()=>{UnityEngine.Debug.Log("Exit State A");})
+					.ExecuteOnEnter((ctx, args)=>{UnityEngine.Debug.Log("Enter State A");})
+					.ExecuteOnExit((ctx, args)=>{UnityEngine.Debug.Log("Exit State A");})
 				.On(MyEvent.EventA)
 				.GoTo(MyState.StateB);
 
 		machine.In(MyState.StateB).On(MyEvent.EventB).GoTo(MyState.StateA);
 
 		machine.Start();
-		machine.Execute();
 		var stateId = machine.CurrentStateId;
 		Assert.AreEqual(stateId, MyState.StateA);
 

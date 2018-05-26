@@ -4,6 +4,7 @@ using System.Collections;
 internal class StateBuilder<TState, TEvent, TContext> : IInSyntax<TState, TEvent, TContext>, IOnSyntax<TState, TEvent, TContext>
 	where TState : IComparable
 	where TEvent : IComparable
+	where TContext : class
 {
 	private StateDictionary<TState, TEvent, TContext> StateDict {get;set;}
 	private IFactory<TState, TEvent, TContext> Factory {get;set;}
@@ -19,20 +20,20 @@ internal class StateBuilder<TState, TEvent, TContext> : IInSyntax<TState, TEvent
 		CurrentState = state;
 	}
 
-	IInSyntax<TState, TEvent, TContext> IInSyntax<TState, TEvent, TContext>.ExecuteOnEnter(Action enterAction)
+	IInSyntax<TState, TEvent, TContext> IInSyntax<TState, TEvent, TContext>.ExecuteOnEnter(Action<TContext, object[]> enterAction)
 	{
 		CurrentState.ExecuteOnEnterAction = enterAction;
 		return this;
 	}
 
-	IInSyntax<TState, TEvent, TContext> IInSyntax<TState, TEvent, TContext>.Execute(Action executeAction)
+	IInSyntax<TState, TEvent, TContext> IInSyntax<TState, TEvent, TContext>.Execute(Action<TContext> executeAction)
 	{
 		CurrentState.ExecuteAction = executeAction;
 
 		return this;
 	}
 
-	IInSyntax<TState, TEvent, TContext> IInSyntax<TState, TEvent, TContext>.ExecuteOnExit(Action exitAction)
+	IInSyntax<TState, TEvent, TContext> IInSyntax<TState, TEvent, TContext>.ExecuteOnExit(Action<TContext, object[]> exitAction)
 	{
 		CurrentState.ExecuteOnExitAction = exitAction;
 
@@ -55,7 +56,7 @@ internal class StateBuilder<TState, TEvent, TContext> : IInSyntax<TState, TEvent
 		return this;
 	}
 
-	IInSyntax<TState, TEvent, TContext> IInSyntax<TState, TEvent, TContext>.Attach(IState attachedState)
+	IInSyntax<TState, TEvent, TContext> IInSyntax<TState, TEvent, TContext>.Attach(IState<TContext> attachedState)
 	{
 		CurrentState.AttachStateObject(attachedState);
 
